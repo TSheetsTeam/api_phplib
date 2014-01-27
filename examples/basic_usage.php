@@ -42,7 +42,7 @@ set_include_path(get_include_path() . PATH_SEPARATOR . $include);
 require_once('tsheets.inc.php');
 
 // Enter your credentials here if you don't want to be prompted each time
-$access_token = 'eb475d33c72f7ef22362a0836d6426fae751d013';
+$access_token = NULL;
 
 if (!isset($access_token)) {
     $access_token = readline('Enter your access token: ');
