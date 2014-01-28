@@ -24,11 +24,6 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
 
-// ensure Curl is installed
-if(!extension_loaded("curl")) {
-    throw(new Exception("The Curl extension is required for the client to function."));
-}
-
 /**
  * Class for all TSheets API usage. Provides basic REST operations as well as methods to help with authentication and
  * token retrieval.
@@ -68,6 +63,11 @@ class TSheetsRestClient {
      * @param string $refresh_token Optional. Only necessary if you will be calling the refresh_access_token method.
      */
     public function __construct($api_version, $access_token=null, $oauth_client_id=null, $oauth_client_secret=null, $refresh_token=null) {
+        // ensure Curl is installed
+        if(!extension_loaded("curl")) {
+            throw(new Exception("The Curl extension is required for the client to function."));
+        }
+
         $this->_host = 'rest';
         $this->_api_version = $api_version;
         $this->_output_format = OutputFormat::AssociativeArray;
@@ -402,12 +402,15 @@ class TSheetsRestClient {
         // Error with HTTP communication or http_code >= 400
         if ($error_code or $error_text or $output === false or $info['http_code'] >= 400) {
             $message = "Invalid response from {$this->_url} http_code:{$info['http_code']}";
-            if ($error_code)
+            if ($error_code) {
                 $message .= " curl_error#: {$error_code}";
-            if ($error_text)
+            }
+            if ($error_text) {
                 $message .= " curl_error: {$error_text}";
-            if ($output !== false and is_string($output) and strlen($output) > 0)
+            }
+            if ($output !== false and is_string($output) and strlen($output) > 0) {
                 $message .= " http_body: {$output}";
+            }
             curl_close($ch);
             throw new TSheetsException($message, "{$this->_url}/{$endpoint}?{$data_str}", $info['http_code'], $output, $error_text, $error_code);
         }

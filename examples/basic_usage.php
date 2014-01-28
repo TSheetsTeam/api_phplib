@@ -35,11 +35,7 @@ OTHER DEALINGS IN THE SOFTWARE.
  *      - Create or edit an application and your access token will be provided
  */
 
-$include = substr(__FILE__, 0, strrpos(__FILE__, '/'));
-$include = substr($include, 0, strrpos($include, '/'));
-set_include_path(get_include_path() . PATH_SEPARATOR . $include);
-
-require_once('tsheets.inc.php');
+require_once('../tsheets.inc.php');
 
 // Enter your credentials here if you don't want to be prompted each time
 $access_token = NULL;
@@ -64,23 +60,30 @@ foreach($users['results']['users'] as $user) {
 
 
 //////////////////////////////////////////////////////////////////////////////////
-readline('Press enter to create a timesheet:');
+readline('Press enter to create two new timesheets:');
 
 // Get jobcodes
-$jobcodes = $tsheets->get(ObjectType::Jobcodes);
+$jobcodes = $tsheets->get(ObjectType::Jobcodes, array('type' => 'regular'));
 
 // Pick a first user and jobcode to work on
 $user = reset($users['results']['users']);
 $jobcode = reset($jobcodes['results']['jobcodes']);
 
-// Create a timesheet
+// Create two timesheets with a single api call
 $request = array();
-$request[0] = array(
+$request[] = array(
     'user_id' => $user['id'],
     'jobcode_id' => $jobcode['id'],
     'type' => 'regular',
     'start' => '2014-01-18T15:19:21-07:00',
     'end' => '2014-01-18T16:19:21-07:00'
+);
+$request[] = array(
+    'user_id' => $user['id'],
+    'jobcode_id' => $jobcode['id'],
+    'type' => 'regular',
+    'start' => '2014-01-19T08:00:00-07:00',
+    'end' => '2014-01-19T17:10:00-07:00'
 );
 $result = $tsheets->add(ObjectType::Timesheets, $request);
 print "Create timesheet returned:\n";
@@ -90,20 +93,21 @@ print_r($result);
 //////////////////////////////////////////////////////////////////////////////////
 readline('Press enter to edit a timesheet:');
 
-// Save the new timesheet id
-$request[0]['id'] = $result['results']['timesheets']['1']['id'];
+// Save the new timesheet ids
+$timesheet_ids = array($result['results']['timesheets']['1']['id'], $result['results']['timesheets']['2']['id']);
 
 // Edit a timesheet
-$request[0]['end'] = '2014-01-18T17:19:21-07:00';
+$request = array();
+$request[] = array('id' => $timesheet_ids[0], 'end' => '2014-01-18T17:19:21-07:00');
 $result = $tsheets->edit(ObjectType::Timesheets, $request);
 print "Edit timesheet returned:\n";
 print_r($result);
 
 
 //////////////////////////////////////////////////////////////////////////////////
-readline('Press enter to get a list of users:');
+readline('Press enter to delete both timesheets:');
 
-// Delete the timesheet
-$result = $tsheets->delete(ObjectType::Timesheets, $request[0]['id']);
+// Delete the timesheets
+$result = $tsheets->delete(ObjectType::Timesheets, $timesheet_ids);
 print "Delete timesheet returned:\n";
 print_r($result);
