@@ -366,6 +366,9 @@ class TSheetsRestClient {
         // Setup the CURL call
         $ch = curl_init();
 
+        // Configure to accept and decode compressed responses
+        curl_setopt($ch,CURLOPT_ENCODING, '');
+
         if ($this->_access_token) {
             array_push($headers, "Authorization: Bearer {$this->_access_token}");
         }
