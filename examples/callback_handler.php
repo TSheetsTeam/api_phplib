@@ -55,7 +55,8 @@ require_once('../tsheets.inc.php');
 // Dynamically build the redirect uri to send to the tsheets authorize endpoint so it calls back to this script, the
 // path to this script must match the uri you used when you registered your application with the TSheets API.
 if ($_SERVER["HTTPS"] != "on") {
-    $status_output .= "TSheets API WILL NOT call back to an unsecure connection. Enable https.<br/>";
+    echo "TSheets API WILL NOT call back to an unsecure connection. Enable https.<br/>";
+    die();
 }
 else if ($_SERVER["SERVER_PORT"] != "443") {
     $redirect_uri = "https://{$_SERVER[HTTP_HOST]}:{$_SERVER["SERVER_PORT"]}{$_SERVER[REQUEST_URI]}";
@@ -65,7 +66,9 @@ else {
 }
 
 // strip any query params
-$redirect_uri = substr($redirect_uri, 0, strpos($redirect_uri, '?'));
+if (strpos($redirect_uri, '?') !== false) {
+    $redirect_uri = substr($redirect_uri, 0, strpos($redirect_uri, '?'));
+}
 
 session_start();
 $js = '';
@@ -177,7 +180,7 @@ a {
     <div style="float:left;margin-left:150px"><a href="http://developers.tsheets.com/docs/api/" target="_blank">API Documentation</a></div>
 </div>
 
-<div id="status" style="background-color:lightyellow;padding:5px 5px 5px 5px;margin-bottom:14px">
+<div id="status" style="background-color:lightyellow;padding:5px 5px 5px 5px;margin-bottom:14px;margin-top:20px">
     {$status_output}
 
     <div id="clear_session" style="display:none;">
