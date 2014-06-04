@@ -522,6 +522,7 @@ abstract class OutputFormat
 abstract class ObjectType
 {
     const Users = 'users';
+    const CurrentUser = 'current_user';
     const EffectiveSettings = 'effective_settings';
     const Jobcodes = 'jobcodes';
     const JobcodeAssignments = 'jobcode_assignments';
