@@ -150,7 +150,7 @@ class TSheetsRestClient {
      * @param string $object_type The type of resource being edited. Can be ObjectType constant or a string.
      * Example: $tsheets->edit(ObjectType::Jobcodes, $json) and $tsheets->edit('jobcodes', $json) are synonymous.
      *
-     * @param array $objects An array of associative arrays that describe the objects to be edited.
+     * @param array $objects An indexed array of associative arrays that describe the objects to be edited.
      * Example: array(array('id' => 112235, 'notes' => 'note1 text'), array('id' => 4244211, 'notes' => 'note2 text'))
      *
      * @return mixed API response. Default type is an associative array, but configurable via
@@ -176,7 +176,7 @@ class TSheetsRestClient {
      * @param string $object_type The type of resource being added. Can be ObjectType constant or a string.
      * Example: $tsheets->add(ObjectType::Jobcodes, $json) and $tsheets->add('jobcodes', $json) are synonymous.
      *
-     * @param array $objects An array of associative arrays that describe the objects to be added.
+     * @param array $objects An indexed array of associative arrays that describe the objects to be added.
      * Example: array(array('name' => 'jobcode1'), array('name' => 'jobcode2'))
      *
      * @return mixed API response. Default type is an associative array, but configurable via
@@ -186,13 +186,41 @@ class TSheetsRestClient {
         return $this->post($object_type, $objects);
     }
 
+    /**
+     * Runs a report and returns the output.
+     *
+     * @param string $report_type The type of report being run. Can be ObjectType constant or a string.
+     * Example: $tsheets->get_report(ReportType::Project, $filters and $tsheets->get_report('project', $filters) are
+     * synonymous.
+     *
+     * @param array $filters An associative array of filters to pass when calling the report.
+     * @return mixed API response. Default type is an associative array, but configurable via
+     * TSheetsRestClient::set_output_format.
+     */
+    public function get_report($report_type, $filters) {
+        $report_endpoint = $report_type;
+        // Our reports endpoint follows the format '/reports/REPORT_TYPE'. If they didn't prepend $report_type with 'reports/',
+        // let's put it on for them.
+        if (strstr($report_type, 'reports/') === false) {
+            $report_endpoint = "reports/{$report_endpoint}";
+        }
+        return $this->post($report_endpoint, $filters, false);
+    }
+
 
     /**
-     * Synonym for TSheetsRestClient::add
-     * @see TSheetsRestClient::add
+     * POSTs to the API
+     *
+     * @param string $api_endpoint  Endpoint to POST to
+     * @param array $post_array  Array that will be converted to the proper JSON string and included as the body of the POST
+     * @param bool $require_indexed_array If true (default), $post_array must be an indexed array (i.e. for POST-ing jobcode objects).
+     *                                    If false, it may be an associative array (i.e. for POST-ing report filters).
+     *
+     * @return mixed API response. Default type is an associative array, but configurable via
+     * TSheetsRestClient::set_output_format.
      */
-    public function post($object_type, $objects) {
-        return $this->_deserialize($this->_request('POST', $object_type, $this->_json_encode_array($objects)));
+    public function post($api_endpoint, $post_array, $require_indexed_array = true) {
+        return $this->_deserialize($this->_request('POST', $api_endpoint, $this->_json_encode_array($post_array, $require_indexed_array)));
     }
 
 
@@ -365,7 +393,7 @@ class TSheetsRestClient {
 
         // Setup the CURL call
         $ch = curl_init();
-
+        
         // Configure to accept and decode compressed responses
         curl_setopt($ch,CURLOPT_ENCODING, '');
 
@@ -440,12 +468,15 @@ class TSheetsRestClient {
      * Turn array into json the TSheets API expects (wrapped in data element).
      *
      * @param mixed $array Array of associative arrays.
+     * @param bool $require_indexed_array  If true, $array must be an array of associative arrays (i.e. for creating
+     *                                     timesheets). If false, we skip this check.
      * @return string json representation
+     * @throws TSheetsException on error
      */
-    private function _json_encode_array($array)
+    private function _json_encode_array($array, $require_indexed_array = true)
     {
         if (is_array($array)) {
-            if ($this->_is_assoc($array)) {
+            if ($this->_is_assoc($array) and $require_indexed_array) {
                 throw new TSheetsException('Input arrays must be an array of associative arrays.');
             }
             return json_encode(array('data' => $array));
@@ -521,7 +552,7 @@ abstract class OutputFormat
  */
 abstract class ObjectType
 {
-    const Users = 'users';
+    const Users = 'users';    
     const CurrentUser = 'current_user';
     const EffectiveSettings = 'effective_settings';
     const Jobcodes = 'jobcodes';
@@ -531,4 +562,17 @@ abstract class ObjectType
     const Timesheets = 'timesheets';
     const TimesheetsDeleted = 'timesheets_deleted';
     const Geolocations = 'geolocations';
+}
+
+
+/**
+ * Class ReportType
+ *
+ * Used to specify what kind of report API calls are made for.
+ * For example: $tsheets->get_report(ReportType::Project)
+ */
+abstract class ReportType
+{
+    const Project = 'project';
+    const Payroll = 'payroll';
 }
