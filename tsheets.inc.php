@@ -44,6 +44,7 @@ class TSheetsRestClient {
     private $_oauth_client_secret;
     private $_access_token;
     private $_refresh_token;
+    private $_bypass_ssl_peer_verification;
 
     /**
      * TSheetsRestClient constructor
@@ -75,6 +76,7 @@ class TSheetsRestClient {
         $this->_oauth_client_secret = $oauth_client_secret;
         $this->_access_token = $access_token;
         $this->_refresh_token = $refresh_token;
+        $this->_bypass_ssl_peer_verification = false;
         $this->set_url();
     }
 
@@ -83,7 +85,13 @@ class TSheetsRestClient {
      * Private method used internally to set a consistent url with variable host name.
      */
     private function set_url() {
-        $this->_url = "https://{$this->_host}.tsheets.com/api/v{$this->_api_version}";
+        if (filter_var($this->_host, FILTER_VALIDATE_IP)) {
+            // it is an IP address, use it straight up
+            $this->_url = "https://{$this->_host}/api/v{$this->_api_version}";
+        }
+        else {
+            $this->_url = "https://{$this->_host}.tsheets.com/api/v{$this->_api_version}";
+        }
     }
 
 
@@ -103,7 +111,9 @@ class TSheetsRestClient {
      * @param string $hostname
      */
     public function set_host($hostname) {
-        if (strpos($hostname, '.')) {
+        if (strpos($hostname, '.') and 
+            // and not an IPV4 or IPV6 address
+            !filter_var($hostname, FILTER_VALIDATE_IP)) {
             $this->_host = substr($hostname, 0, strpos($hostname, '.'));
         }
         else {
@@ -124,6 +134,16 @@ class TSheetsRestClient {
             throw new TSheetsException('Invalid output format, see OutputFormat class definition');
         }
         $this->_output_format = $output_format;
+    }
+
+    
+    /**
+     * Utility method to allow callers to bypass the SSL peer verification. This should not normally be used.
+     *
+     * @param BypassVerification $bypass_verification true/false to indicate if verification should be skipped
+     */
+    public function bypass_ssl_peer_verification($bypass_verification = false) {
+        $this->_bypass_ssl_peer_verification = $bypass_verification;
     }
 
 
@@ -399,6 +419,10 @@ class TSheetsRestClient {
 
         if ($this->_access_token) {
             array_push($headers, "Authorization: Bearer {$this->_access_token}");
+        }
+        
+        if ($this->_bypass_ssl_peer_verification) {
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
         }
 
         if (strcasecmp($method, 'POST') == 0 ) {
