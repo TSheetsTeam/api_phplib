@@ -85,13 +85,7 @@ class TSheetsRestClient {
      * Private method used internally to set a consistent url with variable host name.
      */
     private function set_url() {
-        if (filter_var($this->_host, FILTER_VALIDATE_IP)) {
-            // it is an IP address, use it straight up
-            $this->_url = "https://{$this->_host}/api/v{$this->_api_version}";
-        }
-        else {
-            $this->_url = "https://{$this->_host}.tsheets.com/api/v{$this->_api_version}";
-        }
+        $this->_url = "https://{$this->_host}/api/v{$this->_api_version}";
     }
 
 
@@ -111,14 +105,7 @@ class TSheetsRestClient {
      * @param string $hostname
      */
     public function set_host($hostname) {
-        if (strpos($hostname, '.') and 
-            // and not an IPV4 or IPV6 address
-            !filter_var($hostname, FILTER_VALIDATE_IP)) {
-            $this->_host = substr($hostname, 0, strpos($hostname, '.'));
-        }
-        else {
-            $this->_host = $hostname;
-        }
+        $this->_host = $hostname;
 
         $this->set_url();
     }
@@ -599,4 +586,5 @@ abstract class ReportType
 {
     const Project = 'project';
     const Payroll = 'payroll';
+    const CurrentTotals = 'current_totals';
 }
