@@ -573,6 +573,7 @@ abstract class ObjectType
     const Timesheets = 'timesheets';
     const TimesheetsDeleted = 'timesheets_deleted';
     const Geolocations = 'geolocations';
+    const LastModifiedTimestamps = 'last_modified_timestamps';
 }
 
 
