@@ -69,7 +69,7 @@ class TSheetsRestClient {
             throw(new Exception("The Curl extension is required for the client to function."));
         }
 
-        $this->_host = 'rest';
+        $this->_host = 'rest.tsheets.com';
         $this->_api_version = $api_version;
         $this->_output_format = OutputFormat::AssociativeArray;
         $this->_oauth_client_id = $oauth_client_id;
