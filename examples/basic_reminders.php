@@ -36,7 +36,9 @@ OTHER DEALINGS IN THE SOFTWARE.
  *      - Locate the "API" add-on and either install it or open the preferences
  *      - Create or edit an application and your access token will be provided
  */
+ 
 require_once('../tsheets.inc.php');
+
 // Enter your credentials here if you don't want to be prompted each time
 $access_token = NULL;
 
@@ -44,8 +46,10 @@ if (!isset($access_token)) {
     $access_token = readline('Enter your access token: ');
 }
 $tsheets = new TSheetsRestClient(1, $access_token);
+
 //////////////////////////////////////////////////////////////////////////////////
 readline('Press enter to get a list of reminders:');
+
 // Get a list of users
 $reminders = $tsheets->get(ObjectType::Reminders);
 print("TSheets Users\n");
@@ -58,6 +62,7 @@ foreach($reminders['results']['reminders'] as $reminders) {
 }
 //////////////////////////////////////////////////////////////////////////////////
 readline('Press enter to add a reminder:');
+
 // Create a clock-in and a clock-out reminder with a single api call
 $request = array();
 $request[] = array(
@@ -82,18 +87,25 @@ $request[] = array(
 $result = $tsheets->add(ObjectType::Reminders, $request);
 print "Create reminder returned:\n";
 print_r($result);
+
+
 //////////////////////////////////////////////////////////////////////////////////
 readline('Press enter to edit an existing reminder:');
+
 // Save the new reminders ids in order to edit them in the next step
 $reminder_id = array($result['results']['reminders']['1']['id'], $result['results']['reminders']['2']['id']);
+
 // Edit the first reminder
 $request = array();
 $request[] = array('id' => $reminder_id[0], 'due_days_of_week' => 'Mon,Wed,Fri');
 $result = $tsheets->edit(ObjectType::Reminders, $request);
 print "Edit reminder returned:\n";
 print_r($result);
+
+
 //////////////////////////////////////////////////////////////////////////////////
 readline('Press enter to delete both reminders:');
+
 // Delete the reminders we created
 $result = $tsheets->delete(ObjectType::Reminders, $reminder_id);
 print "Deleted reminders:\n";
