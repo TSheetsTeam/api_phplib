@@ -1,6 +1,7 @@
 <?php
 /*
 Copyright (c) 2014 TSheets.com, LLC.
+
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
 files (the "Software"), to deal in the Software without
@@ -9,8 +10,10 @@ copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the
 Software is furnished to do so, subject to the following
 conditions:
+
 The above copyright notice and this permission notice shall be
 included in all copies or substantial portions of the Software.
+
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
 OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -22,7 +25,9 @@ OTHER DEALINGS IN THE SOFTWARE.
 */
 
 /*
- * This is a command line example that includes a few simple calls using the TSheets PHP API Library.
+ * This is a command line example that includes a few simple calls using the TSheets PHP API Library
+ * to list, add, and edit the reminders endpoint.
+ * The Reminders endpoint refers to clock in/out reminders only, not custom Notifications.
  * It assumes/requires you already have your access token. If you do not have it yet:
  *
  *      - Visit your TSheets web dashboard
@@ -43,66 +48,65 @@ if (!isset($access_token)) {
 $tsheets = new TSheetsRestClient(1, $access_token);
 
 //////////////////////////////////////////////////////////////////////////////////
-readline('Press enter to get a list of users:');
+readline('Press enter to get a list of reminders:');
 
 // Get a list of users
-$users = $tsheets->get(ObjectType::Users);
+$reminders = $tsheets->get(ObjectType::Reminders);
 print("TSheets Users\n");
 print("-------------\n");
-foreach($users['results']['users'] as $user) {
-    print("User: {$user['first_name']} {$user['last_name']}\n");
+foreach($reminders['results']['reminders'] as $reminders) {
+    print("Active: {$reminders['id']} {$reminders['reminder_type']}\n");
+    // If User ID is 0, that means it is a global (company wide) reminder
+    print("User ID: {$reminders['user_id']}\n");
+    print("Reminder: {$reminders['active']} {$reminders['enabled']}\n");
 }
-
-
 //////////////////////////////////////////////////////////////////////////////////
-readline('Press enter to create two new timesheets:');
+readline('Press enter to add a reminder:');
 
-// Get jobcodes
-$jobcodes = $tsheets->get(ObjectType::Jobcodes, array('type' => 'regular'));
-
-// Pick a first user and jobcode to work on
-$user = reset($users['results']['users']);
-$jobcode = reset($jobcodes['results']['jobcodes']);
-
-// Create two timesheets with a single api call
+// Create a clock-in and a clock-out reminder with a single api call
 $request = array();
 $request[] = array(
-    'user_id' => $user['id'],
-    'jobcode_id' => $jobcode['id'],
-    'type' => 'regular',
-    'start' => '2014-01-18T15:19:21-07:00',
-    'end' => '2014-01-18T16:19:21-07:00'
+    'user_id' => '0',
+    'reminder_type' => 'clock-in',
+    'due_time' => '06:00:00',
+    'due_days_of_week' => 'Mon,Tue,Wed,Thu,Fri',
+    'distribution_methods' => 'Push',
+    'active' => 'true',
+    'enabled' => 'true'
 );
 $request[] = array(
-    'user_id' => $user['id'],
-    'jobcode_id' => $jobcode['id'],
-    'type' => 'regular',
-    'start' => '2014-01-19T08:00:00-07:00',
-    'end' => '2014-01-19T17:10:00-07:00'
+    'user_id' => '0',
+    'reminder_type' => 'clock-out',
+    'due_time' => '20:00:00',
+    'due_days_of_week' => 'Mon,Tue,Wed,Thu,Fri',
+    'distribution_methods' => 'Push',
+    'active' => 'true',
+    'enabled' => 'true'
 );
-$result = $tsheets->add(ObjectType::Timesheets, $request);
-print "Create timesheet returned:\n";
+
+$result = $tsheets->add(ObjectType::Reminders, $request);
+print "Create reminder returned:\n";
 print_r($result);
 
 
 //////////////////////////////////////////////////////////////////////////////////
-readline('Press enter to edit a timesheet:');
+readline('Press enter to edit an existing reminder:');
 
-// Save the new timesheet ids
+// Save the new reminders ids in order to edit them in the next step
+$reminder_id = array($result['results']['reminders']['1']['id'], $result['results']['reminders']['2']['id']);
 
-$timesheet_ids = array($result['results']['timesheets']['1']['id'], $result['results']['timesheets']['2']['id']);
-// Edit a timesheet
+// Edit the first reminder
 $request = array();
-$request[] = array('id' => $timesheet_ids[0], 'end' => '2014-01-18T17:19:21-07:00');
-$result = $tsheets->edit(ObjectType::Timesheets, $request);
-print "Edit timesheet returned:\n";
+$request[] = array('id' => $reminder_id[0], 'due_days_of_week' => 'Mon,Wed,Fri');
+$result = $tsheets->edit(ObjectType::Reminders, $request);
+print "Edit reminder returned:\n";
 print_r($result);
 
 
 //////////////////////////////////////////////////////////////////////////////////
-readline('Press enter to delete both timesheets:');
+readline('Press enter to delete both reminders:');
 
-// Delete the timesheets
-$result = $tsheets->delete(ObjectType::Timesheets, $timesheet_ids);
-print "Delete timesheet returned:\n";
+// Delete the reminders we created
+$result = $tsheets->delete(ObjectType::Reminders, $reminder_id);
+print "Deleted reminders:\n";
 print_r($result);

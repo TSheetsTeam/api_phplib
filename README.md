@@ -14,8 +14,12 @@ $result = $tsheets->get(ObjectType::Jobcodes);
 ```
 ##Examples
 
-The examples folder has two examples, the basic example can be used if you already have an access
+The examples folder has three examples, the basic, and reminders, example can be used if you already have an access
 token (which you can get for your own account via the TSheets Web Dashboard -> Add-ons -> API dialog).
+
+The basic example is a command line example of how to add, edit, and delete timesheets using the TSheets API.
+
+The reminders example is similar to the basic example, but for clock-in/out reminders. 
 
 The callback example shows how you can obtain an access token for another user's TSheets account using
 oAuth 2.
