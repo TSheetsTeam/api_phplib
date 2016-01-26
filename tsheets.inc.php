@@ -563,19 +563,20 @@ abstract class OutputFormat
  */
 abstract class ObjectType
 {
-    const Users = 'users';    
+    const BreakRules = 'break_rules';
     const CurrentUser = 'current_user';
-    const EffectiveSettings = 'effective_settings';
-    const Jobcodes = 'jobcodes';
-    const JobcodeAssignments = 'jobcode_assignments';
     const CustomFields = 'customfields';
     const CustomFieldItems = 'customfielditems';
-    const Timesheets = 'timesheets';
-    const TimesheetsDeleted = 'timesheets_deleted';
+    const EffectiveSettings = 'effective_settings';
     const Geolocations = 'geolocations';
+    const Jobcodes = 'jobcodes';
+    const JobcodeAssignments = 'jobcode_assignments';
     const LastModifiedTimestamps = 'last_modified_timestamps';
     const Notifications = 'notifications';
     const Reminders = 'reminders';
+    const Timesheets = 'timesheets';
+    const TimesheetsDeleted = 'timesheets_deleted';
+    const Users = 'users';
 }
 
 
