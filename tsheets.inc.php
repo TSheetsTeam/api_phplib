@@ -436,6 +436,7 @@ class TSheetsRestClient {
         curl_setopt($ch, CURLOPT_HEADER, false);           // Return the header along with the body received from the remote host
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);    // Return the content rather than TRUE/FALSE when running curl_exec()
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1);
         $output = curl_exec($ch);
         $error_text = curl_error($ch);
         $error_code = curl_errno($ch);
