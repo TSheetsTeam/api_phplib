@@ -1,6 +1,6 @@
 <?php
 /*
-Copyright (c) 2014 TSheets.com, LLC.
+Copyright (c) 2017 TSheets.com, LLC.
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
