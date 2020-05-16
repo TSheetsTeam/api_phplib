@@ -1,4 +1,9 @@
 <?php
+
+use TSheets\TSheetsRestClient;
+use TSheets\TSheetsException;
+use TSheets\ObjectType;
+
 /*
 Copyright (c) 2014 TSheets.com, LLC.
 
@@ -50,7 +55,7 @@ OTHER DEALINGS IN THE SOFTWARE.
  *      - Load this script in your browser.
  */
 
-require_once('../tsheets.inc.php');
+require_once '{PATH_TO_YOUR_VENDOR_DIRECTORY}/vendor/autoload.php';
 
 // Dynamically build the redirect uri to send to the tsheets authorize endpoint so it calls back to this script, the
 // path to this script must match the uri you used when you registered your application with the TSheets API.

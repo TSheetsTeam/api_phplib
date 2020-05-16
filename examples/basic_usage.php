@@ -1,4 +1,8 @@
 <?php
+
+use TSheets\TSheetsRestClient;
+use TSheets\ObjectType;
+
 /*
 Copyright (c) 2014 TSheets.com, LLC.
 Permission is hereby granted, free of charge, to any person
@@ -31,8 +35,8 @@ OTHER DEALINGS IN THE SOFTWARE.
  *      - Locate the "API" add-on and either install it or open the preferences
  *      - Create or edit an application and your access token will be provided
  */
- 
-require_once('../tsheets.inc.php');
+
+require_once '{PATH_TO_YOUR_VENDOR_DIRECTORY}/vendor/autoload.php';
 
 // Enter your credentials here if you don't want to be prompted each time
 $access_token = NULL;

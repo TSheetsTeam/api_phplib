@@ -1,0 +1,28 @@
+{
+    "name": "benjaminhu/tsheets-api-phplib",
+    "description": "PHP Helper Library for TSheets API",
+    "type": "library",
+    "homepage": "https://github.com/TSheetsTeam/api_phplib",
+    "keywords": [
+        "library",
+        "php",
+        "rest",
+        "tsheets",
+        "tsheets quickbooks",
+        "tsheets api"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Benjamin Simon"
+        }
+    ],
+    "require": {
+        "php": ">=5.6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "TSheets\\": "src/"
+        }
+    }
+}
