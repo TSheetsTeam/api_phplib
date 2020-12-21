@@ -1,7 +1,7 @@
 <?php
 
 namespace TSheets;
-
+use Exception;
 /*
 Copyright (c) 2017 TSheets.com, LLC.
 
