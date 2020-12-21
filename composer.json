@@ -14,7 +14,8 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Benjamin Simon"
+            "name": "TSheets API PHP Library contributors",
+            "homepage": "https://github.com/TSheetsTeam/api_phplib/graphs/contributors"
         }
     ],
     "require": {
