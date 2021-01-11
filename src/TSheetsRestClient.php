@@ -1,4 +1,7 @@
 <?php
+
+namespace TSheets;
+use Exception;
 /*
 Copyright (c) 2017 TSheets.com, LLC.
 
@@ -504,7 +507,7 @@ class TSheetsRestClient {
 /**
  * Class TSheetsException
  */
-class TSheetsException extends Exception {
+class TSheetsException extends \Exception {
     public $http_code;
     public $http_body;
     public $error_code;
