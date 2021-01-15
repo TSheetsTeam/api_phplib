@@ -6,6 +6,12 @@ PHP Helper Library for TSheets API
 This library provides basic REST operations as well as methods to help with authentication and
 token retrieval.
 
+##Installation
+
+```bash
+$ composer require tsheetsteam/api_phplib
+```
+
 ##Synopsis
 
 ```php

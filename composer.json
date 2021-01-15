@@ -1,5 +1,5 @@
 {
-    "name": "tsheets/tsheets-api-phplib",
+    "name": "tsheetsteam/api_phplib",
     "description": "PHP Helper Library for TSheets API",
     "type": "library",
     "homepage": "https://github.com/TSheetsTeam/api_phplib",
