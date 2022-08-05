@@ -578,6 +578,8 @@ abstract class ObjectType
     const LastModifiedTimestamps = 'last_modified_timestamps';
     const Notifications = 'notifications';
     const Reminders = 'reminders';
+    const ScheduleCalendars = 'schedule_calendars';
+    const ScheduleEvents = 'schedule_events';
     const Timesheets = 'timesheets';
     const TimesheetsDeleted = 'timesheets_deleted';
     const Users = 'users';
